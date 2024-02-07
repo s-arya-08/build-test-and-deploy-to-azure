@@ -36,6 +36,7 @@ stages:
         #repository: $(ecr_repository_uri)
         tags: $(ecr_repository_uri):build-v1
   - job: PushImageToECR
+    dependsOn: BuildNginxImage
     displayName: Push Image to ECR
     steps:
     - script: |
