@@ -35,6 +35,10 @@ stages:
         #buildContext: 'path/to/your/docker/context'
         #repository: $(ecr_repository_uri)
         tags: $(ecr_repository_uri)
+    - script: |
+        docker images
+      displayName: Checking for Image available
+  
   - job: PushImageToECR
     dependsOn: BuildNginxImage
     displayName: Push Image to ECR
