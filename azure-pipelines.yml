@@ -6,8 +6,11 @@ pool:
 
 variables:
   - group: devops-1
-    aws_ecr_arn: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com'
+  - name: aws_ecr_arn
+    value: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com'
   #  docker_image_tag: '$(Build.BuildId)'
+  - name: ecr_repository_uri
+    value: 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev
 
 stages:
 - stage: BuildImage
@@ -20,16 +23,20 @@ stages:
         aws configure set aws_access_key_id "$(Access_key)"
         aws configure set aws_secret_access_key "$(Secret_access_key)"
       displayName: Configure AWS CLI
+      env:
+        AWS_ACCESS_KEY_ID: $(Access_key)
+        AWS_SECRET_ACCESS_KEY: $(Secret_access_key)
 
     - task: Docker@2
       displayName: Build Nginx image
       inputs:
         command: build
-        dockerfile: 'path/to/your/Dockerfile'
-        buildContext: 'path/to/your/docker/context'
-        repository: $(ecr_repository_uri)
-        tags: $(docker_image_tag)
-
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        #buildContext: 'path/to/your/docker/context'
+        #repository: $(ecr_repository_uri)
+        tags: |
+          latest
+          
 - stage: PushImage
   displayName: Push Image to ECR
   dependsOn: BuildImage
@@ -38,10 +45,12 @@ stages:
     displayName: Push Image to ECR
     steps:
     - script: |
-        aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com
       displayName: Login to ECR
 
     - script: |
-        docker push $(ecr_repository_uri):$(docker_image_tag)
+        docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev
+        
+        #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
 
