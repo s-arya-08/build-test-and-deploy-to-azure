@@ -11,13 +11,21 @@ variables:
   #  docker_image_tag: '$(Build.BuildId)'
   - name: ecr_repository_uri
     value: 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev
+  - name: agentpoolname
+    value: 'Test'
+  - name: vmImageName
+    value: 'ubuntu-latest'  
 
 stages:
 - stage: BuildImage
   displayName: Build Nginx Docker Image
   jobs:
-  - job: BuildNginxImage
-    displayName: Build Nginx Docker Image
+  - job: BuildImage
+    pool:
+      name: $(agentpoolname)
+      #demands: Limit -equals DisAbleParallel 
+      vmImage: $(vmImageName)
+    displayName: Build Docker Image
     steps:
     - script: |
         aws configure set aws_access_key_id "$(Access_key)"
@@ -26,17 +34,20 @@ stages:
       env:
         AWS_ACCESS_KEY_ID: $(Access_key)
         AWS_SECRET_ACCESS_KEY: $(Secret_access_key)
-
-    - task: Docker@2
-      displayName: Build Nginx image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        #buildContext: 'path/to/your/docker/context'
-        #repository: $(ecr_repository_uri)
-        tags: $(ecr_repository_uri)
+    - script: |
+        sudo docker build -t $(ecr_repository_uri):build-v1 .
+      displayName: Docker build command
+    - script: |
+        sudo docker images
+      displayName: Checking for Image available
+  
   - job: PushImageToECR
-    dependsOn: BuildNginxImage
+    pool:
+      name: $(agentpoolname)
+      #demands: Limit -equals DisAbleParallel 
+      vmImage: $(vmImageName)
+    
+    dependsOn: BuildImage
     displayName: Push Image to ECR
     steps:
     - script: |
@@ -49,7 +60,7 @@ stages:
       displayName: Login to ECR
 
     - script: |
-        docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev
+        sudo docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
         
         #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
