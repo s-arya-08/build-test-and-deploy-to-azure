@@ -35,10 +35,10 @@ stages:
         AWS_ACCESS_KEY_ID: $(Access_key)
         AWS_SECRET_ACCESS_KEY: $(Secret_access_key)
     - script: |
-        docker build -t $(ecr_repository_uri):build-v1 .
+        sudo docker build -t $(ecr_repository_uri):build-v1 .
       displayName: Docker build command
     - script: |
-        docker images
+        sudo docker images
       displayName: Checking for Image available
   
   - job: PushImageToECR
@@ -60,7 +60,7 @@ stages:
       displayName: Login to ECR
 
     - script: |
-        docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
+        sudo docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
         
         #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
