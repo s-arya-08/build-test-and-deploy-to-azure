@@ -34,8 +34,7 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         #buildContext: 'path/to/your/docker/context'
         #repository: $(ecr_repository_uri)
-        tags: |
-          latest
+        tags: $(ecr_repository_uri):build-v1
           
 - stage: PushImage
   displayName: Push Image to ECR
