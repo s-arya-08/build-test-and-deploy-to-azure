@@ -18,13 +18,9 @@ variables:
 
 stages:
 - stage: BuildImage
-  displayName: Build Nginx Docker Image
+  displayName: Build Push Docker Image
   jobs:
   - job: BuildImage
-    pool:
-      name: $(agentpoolname)
-      #demands: Limit -equals DisAbleParallel 
-      vmImage: $(vmImageName)
     displayName: Build Docker Image
     steps:
     - script: |
@@ -40,50 +36,11 @@ stages:
     - script: |
         sudo docker images
       displayName: Checking for Image available
-  
-  - job: PushImageToECR
-    pool:
-      name: $(agentpoolname)
-      #demands: Limit -equals DisAbleParallel 
-      vmImage: $(vmImageName)
-    
-    dependsOn: BuildImage
-    displayName: Push Image to ECR
-    steps:
-    - script: |
-        aws configure set aws_access_key_id "$(Access_key)"
-        aws configure set aws_secret_access_key "$(Secret_access_key)"
-      displayName: Configure AWS CLI
-      
     - script: |
         aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com
-      displayName: Login to ECR
-
+      displayName: Login to ECR  
     - script: |
         sudo docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
-        
+
         #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
-          
-# - stage: PushImage
-#   displayName: Push Image to ECR
-#   dependsOn: BuildImage
-#   jobs:
-#   - job: PushImageToECR
-#     displayName: Push Image to ECR
-#     steps:
-#     - script: |
-#         aws configure set aws_access_key_id "$(Access_key)"
-#         aws configure set aws_secret_access_key "$(Secret_access_key)"
-#       displayName: Configure AWS CLI
-      
-#     - script: |
-#         aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com
-#       displayName: Login to ECR
-
-#     - script: |
-#         docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev
-        
-#         #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
-#       displayName: Push image to ECR
-
