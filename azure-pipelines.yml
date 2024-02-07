@@ -34,7 +34,7 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         #buildContext: 'path/to/your/docker/context'
         #repository: $(ecr_repository_uri)
-        tags: $(ecr_repository_uri):build-v1
+        tags: $(ecr_repository_uri)
   - job: PushImageToECR
     dependsOn: BuildNginxImage
     displayName: Push Image to ECR
