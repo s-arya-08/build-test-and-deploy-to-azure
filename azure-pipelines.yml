@@ -6,7 +6,7 @@ pool:
 
 variables:
   - group: devops-1
-    aws_ecr_arn: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com'
+   # aws_ecr_arn: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com'
   #  docker_image_tag: '$(Build.BuildId)'
 
 stages:
