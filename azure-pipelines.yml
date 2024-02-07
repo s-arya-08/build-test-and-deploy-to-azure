@@ -34,7 +34,7 @@ stages:
       displayName: Checking for Image available
   
   - job: PushImageToECR
-    dependsOn: BuildNginxImage
+    dependsOn: BuildImage
     displayName: Push Image to ECR
     steps:
     - script: |
