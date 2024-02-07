@@ -38,6 +38,10 @@ stages:
     displayName: Push Image to ECR
     steps:
     - script: |
+        aws configure set aws_access_key_id "$(Access_key)"
+        aws configure set aws_secret_access_key "$(Secret_access_key)"
+      displayName: Configure AWS CLI
+    - script: |
         aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com"
       displayName: Login to ECR
 
