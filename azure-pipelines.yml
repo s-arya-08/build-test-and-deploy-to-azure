@@ -46,13 +46,5 @@ stages:
 
          #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
-    # - task: ECRPushImage@1
-    #   inputs:
-    #     awsCredentials: 'aws'
-    #     regionName: 'us-east-1'
-    #     #sourceImageId: 
-    #     sourceImageName: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev'
-    #     repositoryName: 'dev'
-    #     removeDockerImage: true
-    #     logRequest: true
-    #     logResponse: true
+    - script: |
+    
