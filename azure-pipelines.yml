@@ -47,8 +47,9 @@ stages:
     - task: ECRPushImage@1
       inputs:
         awsCredentials: 'aws'
-        regionName: $(AWS_REGION)
-        imageSource: imagename
-        sourceImageName: $(ecr_repository_uri)
-        pushTag: build-v1
-        repositoryName: dev
+        regionName: 'us-east-1'
+        imageSource: 'imageid'
+        repositoryName: 'dev'
+        removeDockerImage: true
+        logRequest: true
+        logResponse: true
