@@ -40,8 +40,7 @@ stages:
     #     aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com
     #   displayName: Login to ECR  
     - script: |
-        aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com |
-        sudo docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
+        aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com | docker push 427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev:build-v1
 
          #docker push ${aws_ecr_arn}/${project_env}/${module_name}:build-v${BUILD_NUMBER}
       displayName: Push image to ECR
