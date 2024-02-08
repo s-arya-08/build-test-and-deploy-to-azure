@@ -49,7 +49,7 @@ stages:
         awsCredentials: 'aws'
         regionName: 'us-east-1'
         #sourceImageId: 
-        imageSource: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev'
+        sourceImageName: '427306808294.dkr.ecr.${AWS_REGION}.amazonaws.com/dev'
         repositoryName: 'dev'
         removeDockerImage: true
         logRequest: true
